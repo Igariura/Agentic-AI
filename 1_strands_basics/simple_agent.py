@@ -1,7 +1,14 @@
 from strands import Agent
+import logging
 
-# TODO: Add debug logging to see what your agent is thinking
+# Add debug logging to see what your agent is thinking
+logging.basicConfig(level=logging.DEBUG)
 
-# TODO: Create the agent with the following system prompt: "You are a game master for a Dungeon & Dragon game"
+# Create the agent with the system prompt
+agent = Agent(
+    system_prompt="You are a game master for a Dungeon & Dragon game"
+)
 
-# TODO: Summon your agent with a basic incantation such as "Hi, I am an advanturer ready for adventure!"
+# Summon your agent with a basic incantation
+response = agent("Hi, I am an adventurer ready for adventure!")
+print(response)

@@ -1,21 +1,50 @@
 #TODO: Import Agent, MCPClient and streamablehttp_client from the strands library
+from mcp.client.streamable_http import streamablehttp_client
+from strands import Agent
+from strands.tools.mcp.mcp_client import MCPClient
+from strands.models.bedrock import BedrockModel
 
+
+def create_streamable_http_transport():
+        return streamablehttp_client("http://localhost:8080/mcp/")
+    
+   
 def main():
-    # Connect to the dice roll MCP server
+ # Connect to the dice roll MCP server
     print("\nConnecting to D&D Dice Roll MCP Server...")
     # TODO: Create a streamable http MCPClient connecting to "http://localhost:8080/mcp"
+    streamable_http_mcp_client = MCPClient(create_streamable_http_transport)
+
+
     
+   
+
+
     try:
         # TODO: Use the MCP client in a context manager (with statement)
+        with streamable_http_mcp_client:
             # TODO: Get available tools from MCP server using list_tools_sync()
-            print(f"Available tools: {[tool.tool_name for tool in mcp_tools]}")
+            tools = streamable_http_mcp_client.list_tools_sync()
+            print(f"Available tools: {[tool.tool_name for tool in tools]}")
+
+
+
+       
+                
+            model = BedrockModel(
+
+                model_id="amazon.nova-lite-v1:0",
+                region_name="us-east-1"
+             )   
 
             # Create the gamemaster agent with access to dice rolling
             gamemaster = Agent(
+                model=model,
                 system_prompt="""You are Lady Luck, the mystical keeper of dice and fortune in D&D adventures.
                 You speak with theatrical flair and always announce dice rolls with appropriate drama.
-                You know all about D&D mechanics, always use the appropriate tools when applicable - never make up results!"""
+                You know all about D&D mechanics, always use the appropriate tools when applicable - never make up results!""",
                 # TODO: Add the MCP tool to the gamemaster agent
+                tools=tools
             )
             
             # Start interactive session
